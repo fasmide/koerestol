@@ -14,25 +14,28 @@ while True:
 	if ord(ser.read()) == 74:
 			x = False
 			y = False
-			for i in xrange(0, 10):
-				if i is 2:
-					x = struct.unpack('b', ser.read())[0]
-#					x = ord(ser.read())
-#					sys.stdout.write(str(x))
-#					sys.stdout.write("\t")
-					continue	
+
+			mereCheck = 255;
+			mereCheck -= 74;
+
+			for i in xrange(1, 6):
+				value = ser.read()
+				
 				if i is 3:
-					y = struct.unpack('b', ser.read())[0]
-#					y = ord(ser.read())
-#					sys.stdout.write(str(y))
-#					sys.stdout.write("\t")
-					continue
-				ser.read()
-			sys.stdout.write("x: %s, y: %s" % (str(x), str(y)))
+					x = struct.unpack('b', value)[0]
+				if i is 4:
+					y = struct.unpack('b', value)[0]
+
+				sys.stdout.write("%d: %d\t" % (i, ord(value)))
+
+				if not i is 5: # we should not substract the checksum it self...
+					mereCheck -= ord(value)
+				if mereCheck < 0:
+					mereCheck += 255
+
 			itr = itr + 1
+
 			if itr % 15 is 1:			
-				print "draw! %d" % itr
 				plt.scatter(x, y)
 				plt.draw()
-
-			print(" ")
+			print "sum: %d" % (mereCheck)
