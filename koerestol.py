@@ -30,8 +30,8 @@ while True:
 
 				if not i is 5: # we should not substract the checksum it self...
 					mereCheck -= ord(value)
-				if mereCheck < 0:
-					mereCheck += 255
+				if mereCheck <= 0:
+					mereCheck += 256
 
 			itr = itr + 1
 
