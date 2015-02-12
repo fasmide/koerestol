@@ -13,9 +13,10 @@ serialPort.on('open', function() {
 		var data = [74, 0, 0, x, y];
 		data.push(checksum(data));
 		serialPort.write(data);
-	}, 10);
+		debug("TX:", data);
+	}, 100);
 	serialPort.on('data', function(d) {
-		debug("TX:", d.toString());
+		debug("RX:", d);
 	});
 });
 
@@ -33,6 +34,6 @@ function checksum(arr) {
 process.stdin.on('data', function(d) {
 	var directions = d.toString().trim().split(',');
 
-	x = directions[0];
-	y = directions[1];
+	x = parseInt(directions[0], 10);
+	y = parseInt(directions[1], 10);
 });
