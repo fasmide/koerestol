@@ -48,6 +48,7 @@ if (newIncomming) {
 }
 
 void idleUpdate() {
+//importent things here
 }
 void driveUpdate() {
 }
