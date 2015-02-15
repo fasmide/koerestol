@@ -5,19 +5,21 @@
 #include <FiniteStateMachine.h>
 #include <ArduinoJson.h>
 
-struct Frame {
+struct HandiFrame {
   byte startByte = 74;
-  byte cmdByte;
-  byte btnByte;
-  char x;
-  char y;
-  byte checksum;
+  byte cmdByte = 1;
+  byte btnByte = 1;
+  char x = 0;
+  char y = 0;
+  byte checksum = 0;
   int ttl;
 };
-Frame data;
+HandiFrame handiFrame;
+HandiFrame* handiFramePtr = &handiFrame;
 
 
-char wheel[] = "wheel";
+
+char wheelKey[] = "wheel";
 const int TIMEOUT = 1000;
 
 
@@ -54,15 +56,16 @@ void loop() {
       //root.prettyPrintTo(Serial);
       
       // command wheel decode and set ative
-      if (strcmp(wheel, command) == 0) {
-        data.startByte = 74;
-        data.cmdByte = 0;
-        data.btnByte = 0;
+      if (strcmp(wheelKey, command) == 0) {
+        handiFrame.startByte = 74;
+        handiFrame.cmdByte = 0;
+        handiFrame.btnByte = 0;
         int x = root["data"][0]; 
-        data.x = x;
+        handiFrame.x = x;
         int y = root["data"][1]; 
-        data.y = y;
-        data.ttl = millis() + TIMEOUT;
+        handiFrame.y = y;
+        handiFrame.checksum = 255 - handiFrame.startByte - handiFrame.cmdByte - handiFrame.btnByte - handiFrame.x - handiFrame.y;
+        handiFrame.ttl = millis() + TIMEOUT;
         stateMachine.transitionTo(active);
       }
       // Other commands here
@@ -89,10 +92,10 @@ void activeEnter() {
   timer = millis();
 }
 void activeUpdate() {
-  if (millis() > data.ttl)stateMachine.transitionTo(idle);
+  if (millis() > handiFrame.ttl)stateMachine.transitionTo(idle);
   if (millis() > timer) {
     timer = millis() + 10;
-    printToChair();
+    printToChair(&handiFrame);
   }
 }
 void activeExit() {
@@ -103,19 +106,28 @@ void activeExit() {
 
 
 
-void printToChair() {
-  data.checksum = 255 - data.startByte - data.cmdByte - data.btnByte - data.x - data.y;
-  Serial.print (data.startByte);
-  Serial.print (" ");
-  Serial.print (data.cmdByte);
-  Serial.print (" ");
-  Serial.print (data.btnByte);
-  Serial.print (" ");
-  Serial.print (data.x, DEC);
-  Serial.print (" ");
-  Serial.print (data.y, DEC);
-  Serial.print (" ");
-  Serial.println (data.checksum);
+void printToChair(struct HandiFrame *frame) {
+      Serial1.print (frame->startByte);
+      Serial1.print (frame->cmdByte);
+      Serial1.print (frame->btnByte);
+      Serial1.print (frame->x,DEC);
+      Serial1.print (frame->y,DEC);
+      Serial1.println (frame->checksum);
+  
+  /*
+  handiFrame.checksum = 255 - handiFrame.startByte - handiFrame.cmdByte - handiFrame.btnByte - handiFrame.x - handiFrame.y;
+  Serial.print (handiFrame.startByte);
+  Serial.print ("c");
+  Serial.print (handiFrame.cmdByte);
+  Serial.print ("c");
+  Serial.print (handiFrame.btnByte);
+  Serial.print ("c");
+  Serial.print (handiFrame.x, DEC);
+  Serial.print ("c");
+  Serial.print (handiFrame.y, DEC);
+  Serial.print ("c");
+  Serial.println (handiFrame.checksum);
+  */
 }
 
 

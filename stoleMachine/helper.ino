@@ -12,10 +12,10 @@ void serialEvent() {
     }
   }
 }
-void serial1Event() {
-  while (Serial.available()) {
-    char inChar = (char)Serial.read();
-
+void serialEvent1() {
+  while (Serial1.available()) {
+    char inChar = (char)Serial1.read();
+    Serial.write (inChar);
 
   }
 }
