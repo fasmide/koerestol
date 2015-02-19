@@ -1,0 +1,14 @@
+doctype html
+html
+	head
+	title= title
+	link(rel='stylesheet', href='/stylesheets/style.css')
+	script(src='/virtualjoystick.js/virtualjoystick.js')
+	meta(name="viewport", content="width=device-width, user-scalable=no")
+	style.
+		html, body {
+			margin: 0;
+			height: 100%;
+		}
+	body#joy
+		block content

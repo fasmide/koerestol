@@ -1,0 +1,21 @@
+extends layout
+
+block content
+	script.
+		var joystick = new VirtualJoystick({
+			container	: document.getElementById('joy'),
+			mouseSupport: true,
+			limitStickTravel: true,
+			stickRadius: 100
+		});
+		var ws = new WebSocket("ws://10.42.2.152:3001");
+		ws.onopen = function()
+		{
+			setInterval(function() {
+				ws.send(JSON.stringify({x: joystick.deltaX(), y: joystick.deltaY()}));
+				console.log("x", joystick.deltaX(), "y", joystick.deltaY());
+			}, 25);		
+		};
+
+	h1= title
+	p Welcome to #{title}
