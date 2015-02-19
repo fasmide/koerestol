@@ -1,3 +1,4 @@
+/*
 void serialEvent() {
   while (Serial.available()) {
     char inChar = (char)Serial.read();
@@ -18,4 +19,4 @@ void serialEvent1() {
     Serial.write (inChar);
 
   }
-}
+}*/

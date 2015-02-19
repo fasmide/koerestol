@@ -1,4 +1,4 @@
-//{"command":"wheel","data":[10,30]}
+//{"c":"w","data":[10,30]}
 
 
 //http://www.arduino.cc/playground/uploads/Code/FSM_1-6.zip
@@ -7,8 +7,8 @@
 
 struct HandiFrame {
   byte startByte = 74;
-  byte cmdByte = 1;
-  byte btnByte = 1;
+  byte cmdByte = 0;
+  byte btnByte = 0;
   char x = 0;
   char y = 0;
   byte checksum = 0;
@@ -22,7 +22,7 @@ HandiFrame* handiFramePtr = &handiFrame;
 char wheelKey[] = "wheel";
 const int TIMEOUT = 1000;
 
-
+pinMode(4,OUTPUT);
 char json[200];
 char* jsonPtr1 = &json[0];
 
@@ -46,6 +46,18 @@ void setup() {
 
 
 void loop() {
+  while (Serial.available()) {
+    char inChar = (char)Serial.read();
+    if (inChar != 0XD) {
+      *jsonPtr1 = inChar;
+      if (inChar == 0XA) {
+        newIncomming = true;
+        jsonPtr1 = &json[0];
+      } else {
+        jsonPtr1++;
+       }
+    }
+  }
   if (newIncomming) {
     StaticJsonBuffer<200> jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject(json);
@@ -64,8 +76,8 @@ void loop() {
         handiFrame.x = x;
         int y = root["data"][1]; 
         handiFrame.y = y;
-        handiFrame.checksum = 255 - handiFrame.startByte - handiFrame.cmdByte - handiFrame.btnByte - handiFrame.x - handiFrame.y;
         handiFrame.ttl = millis() + TIMEOUT;
+        updateCRC(&handiFrame);
         stateMachine.transitionTo(active);
       }
       // Other commands here
@@ -88,7 +100,7 @@ void idleExit() {
 
 void activeEnter() {
   Serial.println ("active");
-  digitalWrite(13, HIGH);
+  digitalWrite(4, HIGH);
   timer = millis();
 }
 void activeUpdate() {
@@ -99,12 +111,14 @@ void activeUpdate() {
   }
 }
 void activeExit() {
-  digitalWrite(13, LOW);
+  digitalWrite(4, LOW);
 }
 
 
 
-
+void updateCRC(struct HandiFrame *frame) {
+          frame->checksum = 255 - frame->startByte - frame->cmdByte - frame->btnByte - frame->x - frame->y;
+  }
 
 void printToChair(struct HandiFrame *frame) {
       Serial1.print (frame->startByte);
