@@ -1,4 +1,4 @@
-//{"c":"w","data":[10,30]}
+//{"c":"w","x":10,"y":30}
 
 
 //http://www.arduino.cc/playground/uploads/Code/FSM_1-6.zip
@@ -19,10 +19,10 @@ HandiFrame* handiFramePtr = &handiFrame;
 
 
 
-char wheelKey[] = "wheel";
+char wheelKey[] = "w";
 const int TIMEOUT = 1000;
 
-pinMode(4,OUTPUT);
+
 char json[200];
 char* jsonPtr1 = &json[0];
 
@@ -40,6 +40,7 @@ FSM stateMachine = FSM(idle); //initialize state machine, start in state: noop
 
 
 void setup() {
+  pinMode(4,OUTPUT);
   Serial.begin(115200);
   Serial1.begin(38400, SERIAL_8E1);
 }
@@ -64,17 +65,17 @@ void loop() {
     if (!root.success()) {
       Serial.println("parseObject() failed");
     } else {
-      const char* command = root["command"];
+      const char* c = root["command"];
       //root.prettyPrintTo(Serial);
       
       // command wheel decode and set ative
-      if (strcmp(wheelKey, command) == 0) {
+      if (strcmp(wheelKey, c) == 0) {
         handiFrame.startByte = 74;
         handiFrame.cmdByte = 0;
         handiFrame.btnByte = 0;
-        int x = root["data"][0]; 
+        int x = root["x"]; 
         handiFrame.x = x;
-        int y = root["data"][1]; 
+        int y = root["y"]; 
         handiFrame.y = y;
         handiFrame.ttl = millis() + TIMEOUT;
         updateCRC(&handiFrame);
