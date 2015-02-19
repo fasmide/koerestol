@@ -6,12 +6,12 @@
 #include <ArduinoJson.h>
 
 struct HandiFrame {
-  byte startByte = 74;
-  byte cmdByte = 0;
-  byte btnByte = 0;
-  char x = 0;
-  char y = 0;
-  byte checksum = 0;
+  byte startByte;
+  byte cmdByte;
+  byte btnByte;
+  char x;
+  char y;
+  byte checksum;
   int ttl;
 };
 HandiFrame handiFrame;
