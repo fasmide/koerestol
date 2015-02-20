@@ -39,18 +39,16 @@ var WebSocketServer = require('ws').Server
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
     var data = JSON.parse(message);
-    console.log("writing, ", data.x.toFixed(0), data.y.toFixed(0))
     buf.writeInt8(parseInt(data.y, 10), 3);
     buf.writeInt8(parseInt(data.x, 10), 4);
     buf[5] = checksum(buf);
-    console.log(buf, data);
   }); 
 });
 
 var SerialPort = require("serialport").SerialPort,
         debug = require('debug')('Stol');
 
-var serialPort = new SerialPort("/dev/ttyACM0", {
+var serialPort = new SerialPort("/dev/ttyACM1", {
   baudrate: 115200
 });
 
@@ -62,7 +60,7 @@ serialPort.on('open', function() {
     setInterval(function() {
             serialPort.write(buf);
             debug("TX:", buf);
-    }, 10);
+    }, 30);
     serialPort.on('data', function(d) {
             debug("RX:", d);
     });

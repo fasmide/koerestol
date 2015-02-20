@@ -65,7 +65,7 @@ void loop() {
     if (!root.success()) {
       Serial.println("parseObject() failed");
     } else {
-      const char* c = root["command"];
+      const char* c = root["c"];
       //root.prettyPrintTo(Serial);
       
       // command wheel decode and set ative
@@ -105,7 +105,10 @@ void activeEnter() {
   timer = millis();
 }
 void activeUpdate() {
-  if (millis() > handiFrame.ttl)stateMachine.transitionTo(idle);
+  /*if (millis() > handiFrame.ttl)
+  {
+    stateMachine.transitionTo(idle);
+  }*/
   if (millis() > timer) {
     timer = millis() + 10;
     printToChair(&handiFrame);
@@ -125,9 +128,9 @@ void printToChair(struct HandiFrame *frame) {
       Serial1.print (frame->startByte);
       Serial1.print (frame->cmdByte);
       Serial1.print (frame->btnByte);
-      Serial1.print (frame->x,DEC);
-      Serial1.print (frame->y,DEC);
-      Serial1.println (frame->checksum);
+      Serial1.print (frame->x);
+      Serial1.print (frame->y);
+      Serial1.print (frame->checksum);
   
   /*
   handiFrame.checksum = 255 - handiFrame.startByte - handiFrame.cmdByte - handiFrame.btnByte - handiFrame.x - handiFrame.y;
