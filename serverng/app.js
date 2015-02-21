@@ -53,14 +53,14 @@ var serialPort = new SerialPort("/dev/ttyACM1", {
 });
 
 //[74, 0, 0, x, y, checksum];
-var buf = new Buffer([74, 0, 0, 0, 0, 181]);
+var buf = new Buffer([74, 0, 0, 0, 0, 181, 255]);
 
 serialPort.on('open', function() {
     debug("Serial open");
     setInterval(function() {
             serialPort.write(buf);
             debug("TX:", buf);
-    }, 30);
+    }, 100);
     serialPort.on('data', function(d) {
             debug("RX:", d);
     });
