@@ -54,7 +54,22 @@ void setup()
 void loop() // run over and over
 {
   while (Serial1.available()) {
-    Serial1.read();
+    if (Serial1.read() == 84) {
+      Serial.write(84);
+      int i = 1;
+      while(true) {
+        
+        if(Serial1.available()) {
+          Serial.write(Serial1.read());  
+          i++;
+        }  
+        if(i == 6) {
+          break;  
+        }
+      }
+    
+    }
+    
     
   }
 
