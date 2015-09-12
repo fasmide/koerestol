@@ -37,7 +37,6 @@ void setup()
   frame[3] = 0;
   frame[4] = 0;
   frame[5] = 181;
-  frame[6] = 128;
   // Open serial communications and wait for port to open:
   Serial.begin(115200);
   Serial1.begin(38400, SERIAL_8E1);
@@ -56,7 +55,7 @@ void loop() // run over and over
   while (Serial1.available()) {
     if (Serial1.read() == 84) {
       Serial.write(84);
-      int i = 1;
+      int i = 1; //we did already send the first byte
       while(true) {
         
         if(Serial1.available()) {
@@ -81,7 +80,6 @@ void loop() // run over and over
     frame[3] = Serial.read();
     frame[4] = Serial.read();
     frame[5] = Serial.read();
-    frame[6] = Serial.read();
     timeout = millis()+1000;
     going = true;
   }
@@ -94,7 +92,6 @@ void loop() // run over and over
     }
      Serial1.flush();
      
-    digitalWrite(9, HIGH);  
 
     timeToDo = millis()+10;
 
