@@ -1,1 +1,1 @@
-@reboot while true; do autossh -M 0 -f fas@node.mide.dk -R 2224:localhost:22 -N -o "ServerAliveInterval 45" -o "ServerAliveCountMax 2"; sleep 5; done
+@reboot autossh -M 0 -f fas@node.mide.dk -R 2224:localhost:22 -N -o "ServerAliveInterval 45" -o "ServerAliveCountMax 2"
